@@ -1,64 +1,94 @@
 class Nodo:
     def __init__(self, valor):
         self.valor = valor
-        self.proximo = None  # aponta pro próximo nodo
-
-
+        self.proximo = None
+        
 class Lista:
     def __init__(self):
-        self.cabeca = None  # primeiro nodo da lista
-
-    def inserir(self, valor):
-        novo = Nodo(valor) # 1. cria o novo nodo
-        novo.proximo = self.cabeca # 2. novo aponta pra quem era o primeiro
-        self.cabeca = novo # 3. novo vira o primeiro
-
-    def para_lista_python(self):
-        """Converte lista encadeada → list do Python (para facilitar ordenação)"""
-        elementos = []
-        atual = self.cabeca
-        while atual:
-            elementos.append(atual.valor)
-            atual = atual.proximo
-        return elementos
-
-    def reconstruir_da_lista(self, elementos):
-        """Reconstrói a lista encadeada a partir de uma list do Python"""
-        self.cabeca = None
-        # percorre ao contrário para compensar o comportamento de pilha do inserir,
-        # que sempre coloca o novo nodo na cabeça — garantindo ordem crescente no final
-        for valor in reversed(elementos): 
-            self.inserir(valor)
-            
-    
-    def counting_sort(self):
-        # 1. converte a lista encadeada para uma list do Python
-        elementos = self.para_lista_python()
-        # se a lista estiver vazia, não há nada a ordenar
-        if not elementos:
-            return
-        # 2. encontra o valor máximo para determinar o tamanho do array de contagem
-        maximo = max(elementos)
-        # 3. cria o array de contagem e conta as ocorrências de cada valor
-        contagem = [0] * (maximo + 1)
-        # 4. preenche o array de contagem
-        for val in elementos:
-            contagem[val] += 1
-        # 5. reconstrói a lista ordenada a partir do array de contagem
-        ordenado = []
-        # para cada valor e sua quantidade, adiciona o valor à lista ordenada a quantidade de vezes que ele aparece
-        for val, qtd in enumerate(contagem):
-            ordenado.extend([val] * qtd) # cria uma lista repetindo o valor qtd vezes e o extend adiciona esses elementos na lista ordenado
-        self.reconstruir_da_lista(ordenado)
+        self.cabeca = None #Comeca vazia sem nenhum Nodo
         
-# ── Teste ──────────────────────────────────────
-lista = Lista()
-
-for numero in [3, 1, 2, 1, 3]:
-    lista.inserir(numero)
-
-print("antes:", lista.para_lista_python())
-
-lista.counting_sort()
-
-print("depois:", lista.para_lista_python())
+    def adicionar(self, valor):
+        #Metodo para add um novo dado no final da lista
+        novo_no = Nodo(valor) #Cria um novo Nodo
+        
+        #Se a Lista estiver vazia, o novo nó vira a cabeça
+        if self.cabeca is None:
+            self.cabeca = novo_no
+            print(f"{valor} adicionado como o primeiro da lista.")
+            return
+        
+        #Se nao estiver vazia, caminha até o ultimo nó
+        atual = self.cabeca 
+        while atual.proximo is not None:
+            atual = atual.proximo
+            
+        #Faz o engate: o próximo do último agora é o novo nó
+        atual.proximo = novo_no
+        print(f"{valor} engatado no final da lista.")
+        
+    def exibir(self):
+        #Percorre a lista e imprime visualmente os elementos
+        if self.cabeca is None:
+            print("Lista vazia.")
+            return
+        
+        atual = self.cabeca
+        while atual is not None: #Enquanto atual nao for None
+            print(f"{atual.valor}", end="->")
+            atual = atual.proximo #pula para o proximo
+        print("None (fim)\n")
+    
+    #Algoritmo do Merge Sort    
+    def merge_sort(self, cabeca):
+        if cabeca is None or cabeca.proximo is None:
+            return cabeca
+        
+        meio = self._get_meio(cabeca)
+        proximo_do_meio = meio.proximo
+        meio.proximo = None
+        
+        esquerda = self.merge_sort(cabeca)
+        direita = self.merge_sort(proximo_do_meio)
+        
+        return self._merge(esquerda, direita)
+    
+    def _get_meio(self, cabeca):
+        #Logica da tarturuga e lebre
+        lento = cabeca 
+        rapido = cabeca 
+        while rapido.proximo and rapido.proximo.proximo:
+            lento = lento.proximo
+            rapido = rapido.proximo.proximo
+        return lento
+    
+    def _merge(self, esquerda, direita):
+        #Logica de fusao
+        if not esquerda: return direita
+        if not direita: return esquerda
+        
+        if esquerda.valor <= direita.valor:
+            resultado = esquerda
+            resultado.proximo = self._merge(esquerda.proximo, direita)
+        else:
+            resultado = direita
+            resultado.proximo = self._merge(esquerda, direita.proximo) 
+        return resultado
+    #End Merge Sort
+            
+        
+#testes
+    
+if __name__ == "__main__":
+    minha_lista = Lista()
+    dados = [15, 3, 22, 10, 1, 40]
+    for d in dados:
+        minha_lista.adicionar(d)
+    
+    print("Antes da ordenacao:")
+    minha_lista.exibir()
+    
+    #Aplicando o merge sort
+    minha_lista.cabeca = minha_lista.merge_sort(minha_lista.cabeca)
+    
+    print("Apos o Merge Sort:")
+    minha_lista.exibir()
