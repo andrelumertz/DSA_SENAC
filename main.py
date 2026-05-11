@@ -29,14 +29,14 @@ class Lista:
     def exibir(self):
         #Percorre a lista e imprime visualmente os elementos
         if self.cabeca is None:
-            print("Lista vazia.")
+            print("Lista vazia")
             return
         
         atual = self.cabeca
         while atual is not None: #Enquanto atual nao for None
             print(f"{atual.valor}", end="->")
             atual = atual.proximo #pula para o proximo
-        print("None (fim)\n")
+        print("None fim\n")
     
     #Algoritmo do Merge Sort    
     def merge_sort(self, cabeca):
@@ -75,74 +75,163 @@ class Lista:
         return resultado
     #End Merge Sort
     
-    #Algotitmo de Quick Sort
-    def quick_sort(self,cabeca,fim):
-        #matodo principal do quick sort
-        #se a lista estiver vazia ou for um unico nó, para
+    
+    #Algoritmo de Quick Sort
+    def quick_sort(self, cabeca, fim):
         if not cabeca or cabeca == fim:
             return cabeca
         
-        #particiona a lista e coloca o pivo no lugar certo
-        nova_cabeca, novo_fim, pivo = self_particionar(cabeca,fim)
+        nova_cabeca, novo_fim, pivo = self._particionar(cabeca, fim)
         
-        #se o pivo nao for o primeiro elemtno, ordena a parte esquerda da lista
         if nova_cabeca != pivo:
             aux = nova_cabeca 
             while aux.proximo != pivo:
                 aux = aux.proximo
-            aux.proximo = None #isola a esquerda
+            aux.proximo = None 
             
             nova_cabeca = self.quick_sort(nova_cabeca, aux)
             
-            #reconecta o pivo a parte esquerda ordenada
             aux = self._get_ultimo(nova_cabeca)
             aux.proximo = pivo
             
-        #ordena a parte da direita da lista apos o pivo
-        pivo.proximo  = self.quick_sort(pivo.proximo, novo_fim)
-        
+        pivo.proximo = self.quick_sort(pivo.proximo, novo_fim)
         return nova_cabeca
     
     def _particionar(self, cabeca, fim):
-        #Organiza os nós ao redor do pivo
         pivo = fim
         anterior = None
         atual = cabeca
         cauda = pivo
-        
         nova_cabeca = None
         
         while atual != pivo:
             if atual.valor < pivo.valor:
-                #o nó fica onde está
                 if nova_cabeca is None:
                     nova_cabeca = atual
                 anterior = atual 
-                atual =  atual.proximo
+                atual = atual.proximo
             else:
-                #O nó é maior: move ele para depois do pivo
                 if anterior:
                     anterior.proximo = atual.proximo
                 proximo_temp = atual.proximo
-                atual.proximo =  None
+                atual.proximo = None
                 cauda.proximo = atual
                 cauda = atual
                 atual = proximo_temp
-            
-            if nova_cabeca is None:
-                nova_cabeca = pivo
-                
-            return nova_cabeca, cauda, pivo
         
-        def _get_ultimo(self, cabeca):
-            #auxiliar para achar o fim do trilho
-            while cabeca and cabeca.proximo:
-                cabeca = cabeca.proximo
-            return cabeca
+        if nova_cabeca is None:
+            nova_cabeca = pivo
+                
+        return nova_cabeca, cauda, pivo
+        
+    def _get_ultimo(self, cabeca):
+        while cabeca and cabeca.proximo:
+            cabeca = cabeca.proximo
+        return cabeca
+    #End Quick Sort
+    
+    #Algoritmo de Counting Sort
+    def counting_sort(self):
+        #Ordenação por contagem, ideal para inteiros não negativos
+        if self.cabeca is None:
+            return
+
+        #1 Encontrar o maior valor para saber o tamanho
+        maior_valor = self.cabeca.valor
+        atual = self.cabeca
+        while atual:
+            if atual.valor > maior_valor:
+                maior_valor = atual.valor
+            atual = atual.proximo
+
+        #2 Criar o placar, uma lista de zeros
+        #Se o maior valor for 10, precisamos de 11 espaços do 0 ao 10
+        placar = [0] * (maior_valor + 1)
+
+        #3 Preencher o placar: percorre o trem e soma +1 na posição do valor
+        atual = self.cabeca
+        while atual:
+            placar[atual.valor] += 1
+            atual = atual.proximo
+
+        #4 Reconstruir o trem original usando os dados do placar
+        atual = self.cabeca
+        for numero, quantidade in enumerate(placar):
+            while quantidade > 0:
+                atual.valor = numero #Sobrescreve o valor do vagão
+                atual = atual.proximo #Pula para o proximo
+                quantidade -= 1
+    #End Counting Sort
+                
+    #Algoritmo de Radix Sort
+    def radix_sort(self):
+        #Ordena olhando digito por digito
+        if not self.cabeca:
+            return
+
+        #1 Encontrar o maior numero para saber quantos digitos processar
+        max_val = self.cabeca.valor
+        atual = self.cabeca
+        while atual:
+            if atual.valor > max_val:
+                max_val = atual.valor
+            atual = atual.proximo
+
+        #2 Processar cada digito unidade, dezena, centena...
+        exp = 1
+        while max_val // exp > 0:
+            self._counting_sort_para_radix(exp)
+            exp *= 10
+
+    def _counting_sort_para_radix(self, exp):
+        #Versão do counting sort que olha apenas para um digito
+        output = [0] * self._get_tamanho()
+        contagem = [0] * 10 #Apenas 10 digitos possiveis 0-9
+        
+        #Armazena a contagem das ocorrencias
+        atual = self.cabeca
+        while atual:
+            indice = (atual.valor // exp) % 10
+            contagem[indice] += 1
+            atual = atual.proximo
+
+        #Muda contagem[i] para conter a posição real no output
+        for i in range(1, 10):
+            contagem[i] += contagem[i - 1]
+
+        #Constroi o array de saida output
+        #Para manter percorremos a lista e guardamos os valores
+        temp_lista = []
+        atual = self.cabeca
+        while atual:
+            temp_lista.append(atual.valor)
+            atual = atual.proximo
+        
+        #Preenche o output de tras para frente para manter 
+        res_array = [0] * len(temp_lista)
+        for i in range(len(temp_lista) - 1, -1, -1):
+            valor = temp_lista[i]
+            indice = (valor // exp) % 10
+            res_array[contagem[indice] - 1] = valor
+            contagem[indice] -= 1
+
+        #Copia o output de volta para a nossa lista encadeada
+        atual = self.cabeca
+        for valor in res_array:
+            atual.valor = valor
+            atual = atual.proximo
+
+    def _get_tamanho(self):
+        #Retorna quantos nós existem no trem
+        count = 0
+        atual = self.cabeca
+        while atual:
+            count += 1
+            atual = atual.proximo
+        return count
     
         
 #testes
-    
 if __name__ == "__main__":
     minha_lista = Lista()
     dados = [15, 3, 22, 10, 1, 40]
@@ -171,3 +260,30 @@ if __name__ == "__main__":
 
     print("Quick Sort depois")
     lista_quick.exibir()
+
+    lista_counting = Lista()
+    for d in [4, 2, 2, 8, 3, 3, 1]:
+        lista_counting.adicionar(d)
+
+    print("Counting Sort antes:")
+    lista_counting.exibir()
+
+    lista_counting.counting_sort()
+
+    print("Counting Sort depois:")
+    lista_counting.exibir()
+
+    #Teste do Radix Sort
+    lista_radix = Lista()
+
+    dados_radix = [170, 45, 75, 90, 802, 24, 2, 66]
+    for d in dados_radix:
+        lista_radix.adicionar(d)
+
+    print("Radix Sort antes:")
+    lista_radix.exibir()
+
+    lista_radix.radix_sort()
+
+    print("Radix Sort depois:")
+    lista_radix.exibir()
