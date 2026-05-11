@@ -128,15 +128,18 @@ class Lista:
         while cabeca and cabeca.proximo:
             cabeca = cabeca.proximo
         return cabeca
+    
     #End Quick Sort
     
     #Algoritmo de Counting Sort
     def counting_sort(self):
-        #Ordenação por contagem, ideal para inteiros não negativos
+        #Verifica se está vazio, se nao tiver nada a cabeca é None 
+        # e o algoritmo para por aqui e nao temos nada para ordenar
         if self.cabeca is None:
             return
 
-        #1 Encontrar o maior valor para saber o tamanho
+        #1 Encontrar o maior valor para
+        # saber o tamanho
         maior_valor = self.cabeca.valor
         atual = self.cabeca
         while atual:
@@ -156,11 +159,11 @@ class Lista:
 
         #4 Reconstruir o trem original usando os dados do placar
         atual = self.cabeca
-        for numero, quantidade in enumerate(placar):
-            while quantidade > 0:
-                atual.valor = numero #Sobrescreve o valor do vagão
+        for numero, quantidade in enumerate(placar): #percorre o placar e entrega numero e quantidade
+            while quantidade > 0: #esse loop vai repetir o numero do placar a quantidade de vezes que ele apareceu
+                atual.valor = numero #Sobrescreve o valor do nosso vagão do trem com o numero do placar
                 atual = atual.proximo #Pula para o proximo
-                quantidade -= 1
+                quantidade -= 1 #Estamos diminuindo a quantidade para saber quantas vezes ainda precisamos escrever esse numero
     #End Counting Sort
                 
     #Algoritmo de Radix Sort
