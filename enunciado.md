@@ -8,9 +8,9 @@ Uma classe Lista, que gerencia a estrutura e oferece métodos de ordenação
 
 Requisitos
 A classe Lista deve implementar os seguintes métodos:
-merge_sort() -
-quick_sort() -
-counting_sort() -feito
+merge_sort()
+quick_sort() 
+counting_sort()
 radix_sort()
 
 Todos os métodos devem:
