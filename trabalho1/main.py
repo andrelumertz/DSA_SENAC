@@ -128,6 +128,7 @@ class Lista:
         while cabeca and cabeca.proximo:
             cabeca = cabeca.proximo
         return cabeca
+    
     #End Quick Sort
     
     #Algoritmo de Counting Sort
