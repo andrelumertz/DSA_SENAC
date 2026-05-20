@@ -128,7 +128,6 @@ class Lista:
         while cabeca and cabeca.proximo:
             cabeca = cabeca.proximo
         return cabeca
-    
     #End Quick Sort
     
     #Algoritmo de Counting Sort
@@ -250,43 +249,43 @@ if __name__ == "__main__":
     print("Apos o Merge Sort:")
     minha_lista.exibir()
     
-    lista_quick = Lista()
-    for d in [30, 10, 45, 5, 20]:
-        lista_quick.adicionar(d)
+    # lista_quick = Lista()
+    # for d in [30, 10, 45, 5, 20]:
+    #     lista_quick.adicionar(d)
 
-    print("Quick Sort antes")
-    lista_quick.exibir()
+    # print("Quick Sort antes")
+    # lista_quick.exibir()
 
-    #Pega o ultimo nó para passar como parametro
-    ultimo_no = lista_quick._get_ultimo(lista_quick.cabeca)
-    lista_quick.cabeca = lista_quick.quick_sort(lista_quick.cabeca, ultimo_no)
+    # #Pega o ultimo nó para passar como parametro
+    # ultimo_no = lista_quick._get_ultimo(lista_quick.cabeca)
+    # lista_quick.cabeca = lista_quick.quick_sort(lista_quick.cabeca, ultimo_no)
 
-    print("Quick Sort depois")
-    lista_quick.exibir()
+    # print("Quick Sort depois")
+    # lista_quick.exibir()
 
-    lista_counting = Lista()
-    for d in [4, 2, 2, 8, 3, 3, 1]:
-        lista_counting.adicionar(d)
+    # lista_counting = Lista()
+    # for d in [4, 2, 2, 8, 3, 3, 1]:
+    #     lista_counting.adicionar(d)
 
-    print("Counting Sort antes:")
-    lista_counting.exibir()
+    # print("Counting Sort antes:")
+    # lista_counting.exibir()
 
-    lista_counting.counting_sort()
+    # lista_counting.counting_sort()
 
-    print("Counting Sort depois:")
-    lista_counting.exibir()
+    # print("Counting Sort depois:")
+    # lista_counting.exibir()
 
-    #Teste do Radix Sort
-    lista_radix = Lista()
+    # #Teste do Radix Sort
+    # lista_radix = Lista()
 
-    dados_radix = [170, 45, 75, 90, 802, 24, 2, 66]
-    for d in dados_radix:
-        lista_radix.adicionar(d)
+    # dados_radix = [170, 45, 75, 90, 802, 24, 2, 66]
+    # for d in dados_radix:
+    #     lista_radix.adicionar(d)
 
-    print("Radix Sort antes:")
-    lista_radix.exibir()
+    # print("Radix Sort antes:")
+    # lista_radix.exibir()
 
-    lista_radix.radix_sort()
+    # lista_radix.radix_sort()
 
-    print("Radix Sort depois:")
-    lista_radix.exibir()
+    # print("Radix Sort depois:")
+    # lista_radix.exibir()
