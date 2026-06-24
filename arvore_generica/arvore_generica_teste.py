@@ -28,11 +28,12 @@ class Arvore:
             no_encontrado, _ = self.buscar_no_e_pai(pai, pai_atual)
             if no_encontrado:
                no_encontrado.adicionar_filho(novo_no)
-            else:
-                input("Pai não encontrado! Enter")
 
 
     def buscar_no_e_pai(self, valor, no=None, pai=None):
+        if self.vazia():
+            return None, None
+            
         if no is None:
             no = self.raiz
 
@@ -46,52 +47,76 @@ class Arvore:
 
         return None, None
 
-    def buscar_no(self, valor):
-        no, _ = self.buscar_no_e_pai(valor)
-        return no
-    "----"
-    # def altura(self, no=None):
-    #     if no is None:
-    #         no = self.raiz
-    #
-    #     if len(no.filhos) == 0:
-    #         return 0
-    #
-    #     alturas_dos_filhos = [self.altura(filho) for filho in no.filhos]
-    #     return 1 + max(alturas_dos_filhos)
-
     def imprimir(self, no=None, nivel=0):
         if self.vazia():
-            print("------ Árvore vazia ------")
+            print("--- Árvore vazia ---")
             return
 
         if no is None:
             no = self.raiz
-        print(f"Nível: {nivel}", end="-> ")
-        print('.' * nivel + str(no.valor))
+            
+        print("Nível:", nivel, "->", '.' * nivel + str(no.valor))
         for filho in no.filhos:
             self.imprimir(filho, nivel + 1)
-        # input("----")
+
+    #Parte da exclusão de nós na árvore
+    def excluir_no(self, valor):
+        if self.vazia():
+            return
+
+        #Se for para excluir a raiz
+        if self.raiz.valor == valor:
+            self.raiz = None
+            return
+
+        #Busca quem é o nó e quem é o pai dele
+        no_alvo, pai = self.buscar_no_e_pai(valor)
+
+        #Se achou os dois remove o alvo da lista de filhos do pai
+        if no_alvo != None and pai != None:
+            pai.filhos.remove(no_alvo)
 
 
+#Parte 2: Leitura de pastas e arquivos do sistema operacional
+def carregar_pastas(caminho, arvore, pai=None):
+    # Pega apenas o nome da pasta atual
+    if "\\" in caminho:
+        nome_pasta = caminho.split("\\")[-1]
+    else:
+        nome_pasta = caminho.split("/")[-1]
+        
+    if nome_pasta == "": 
+        nome_pasta = caminho
 
-def adicionar_ramo(arvore):
-    while True:
-        arvore.imprimir()
-        print("\nEntre com os dados ou ENTER para encerrar!")
-        valor = input("Digite o valor/dado a ser inserido: ")
-        if not valor:
-            break
-        ramo = None
-        if not arvore.vazia():
-            ramo  = input("Digite o pai para esse dado: ")
-            if not ramo:
-                break
-        arvore.adicionar_no(valor, ramo)
+    #Adiciona na arvore usando a função
+    arvore.adicionar_no(nome_pasta, pai)
+
+    #Lista tudo o que tem dentro da pasta atual
+    itens = os.listdir(caminho)
+    
+    for item in itens:
+        if caminho.endswith("\\"):
+            sub_caminho = caminho + item
+        else:
+            sub_caminho = caminho + "\\" + item
+
+        #Se for uma pasta faz a recursão
+        if os.path.isdir(sub_caminho):
+            carregar_pastas(sub_caminho, arvore, nome_pasta)
 
 
+#Teste da árvore genérica
 arvore = Arvore()
-adicionar_ramo(arvore)
 
+caminho_usuario = input("Digite o caminho da pasta: ")
+carregar_pastas(caminho_usuario, arvore)
 
+print("\n--- Árvore criada ---")
+arvore.imprimir()
 
+print("\n--- Testando Exclusão ---")
+pasta_deletar = input("Digite o nome da pasta que voce quer excluir: ")
+arvore.excluir_no(pasta_deletar)
+
+print("\n--- Árvore depois da exclusão ---")
+arvore.imprimir()
