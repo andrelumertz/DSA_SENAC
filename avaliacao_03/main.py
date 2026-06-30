@@ -194,7 +194,6 @@ class ArvoreAVL:
 
 
 #Teste na árvore AVL
-
 def popular_arvore(arvore):
     #Valores do trabalho
     lista_entradas = [100, 50, 20, 40, 30] 
