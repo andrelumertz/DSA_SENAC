@@ -81,7 +81,7 @@ class ArvoreAVL:
             no_atual.direita = self._remover_no_recursivo(no_atual.direita, valor)
         else:
             
-            #Casos com 1 ou 0 filhos
+            #Caso com 1 ou 0 filhos
             if no_atual.esquerda is None:
                 temp = no_atual.direita
                 no_atual = None
@@ -91,12 +91,12 @@ class ArvoreAVL:
                 no_atual = None
                 return temp
 
-            #Casos com 2 filhos e pega o sucessor
+            #Caso com 2 filhos e pega o sucessor
             temp = self._min_valor_no(no_atual.direita)
             no_atual.valor = temp.valor
             no_atual.direita = self._remover_no_recursivo(no_atual.direita, temp.valor)
 
-        #Se a arvore ficou vazia apos exclusão
+        #Se a árvore ficou vazia apos exclusão
         if no_atual is None:
             return no_atual
 
@@ -174,7 +174,7 @@ class ArvoreAVL:
         filhoE.altura = 1 + max(
             self._altura(filhoE.esquerda),
             self._altura(filhoE.direita))
-        input("Enter - Pressione Enter para continuar")
+        input("Enter - Pressione Enter para continuar!")
         return filhoE
 
     def imprimir(self):
